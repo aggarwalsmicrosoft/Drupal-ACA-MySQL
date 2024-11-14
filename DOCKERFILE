@@ -1,0 +1,15 @@
+FROM drupal:10.2 
+
+# Install necessary packages for SSL
+RUN apt-get update && apt-get install -y \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy SSL certificates into the container
+COPY DigiCertGlobalRootCA.crt.pem /var/www/html/sites/default/files/DigiCertGlobalRootCA.crt.pem
+
+# Set environment variables for Drupal to use SSL
+ENV DRUPAL_DB_CERT=/var/www/html/sites/default/files/DigiCertGlobalRootCA.crt.pem
+
+# Ensure the permissions are correct
+RUN chmod 644 /var/www/html/sites/default/files/DigiCertGlobalRootCA.crt.pem
